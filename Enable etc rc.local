@@ -1,0 +1,32 @@
+# on ubuntu 20.04 by default the rc.local don't exist
+# make a systemd service for rc-local
+# add in /etc/systemd/system/rc-local.service
+$ nano /etc/systemd/system/rc-local.service
+
+[Unit]  
+ Description=/etc/rc.local Compatibility  
+ ConditionPathExists=/etc/rc.local  
+
+[Service]  
+ Type=forking  
+ ExecStart=/etc/rc.local start  
+ TimeoutSec=0  
+ StandardOutput=tty  
+ RemainAfterExit=yes  
+ SysVStartPriority=99  
+
+[Install]  
+ WantedBy=multi-user.target 
+
+# active it
+$ touch /etc/rc.local  
+$ chmod +x /etc/rc.local  
+$ systemctl enable rc-local  
+
+$ nano /etc/rc.local
+  if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+   echo never > /sys/kernel/mm/transparent_hugepage/defrag
+fi
+if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+   echo never > /sys/kernel/mm/transparent_hugepage/enabled
+fi
